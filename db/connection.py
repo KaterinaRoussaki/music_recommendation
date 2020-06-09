@@ -27,12 +27,12 @@ class Connection:
             print("Error: ", error)
 
     def csv_to_table(
-        self, file_path, table_name, delete_columns=[], is_csv=True
+        self, file_path, table_name, delete_columns=[], is_csv=True, index_col=False
     ):
         if is_csv is True:
             csv_file = pandas.read_csv(file_path, sep=",", engine="python")
         else:
-            csv_file = pandas.read_csv(file_path, sep='\t', engine="python")
+            csv_file = pandas.read_csv(file_path, sep="\t", engine="python")
 
         if len(delete_columns) != 0:
             csv_file.drop(columns=delete_columns)
@@ -40,28 +40,51 @@ class Connection:
         table_values = csv_file.values
         table_col_names = csv_file.columns.values
 
-        self.create_table(table_name, table_col_names)
+        self.create_table(table_name, table_col_names, index_col)
 
-        query = "INSERT INTO " + table_name + " VALUES \n"
-        for row in table_values[: len(table_values) - 1]:
-            query += "("
+        if index_col is True:
+            row_id = 1
+
+            query = "INSERT INTO " + table_name + " VALUES \n"
+            for row in table_values[: len(table_values) - 1]:
+                query += "(" + str(row_id) + ","
+                row_id += 1
+                for i in row[: len(row) - 1]:
+                    query += '"' + str(i).replace('"', " ") + '"' + ","
+                query += '"' + str(row[len(row) - 1]).replace('"', " ") + '"' + "), \n"
+
+            query += "(" + str(row_id) + ","
+            row = table_values[len(table_values) - 1]
             for i in row[: len(row) - 1]:
                 query += '"' + str(i).replace('"', " ") + '"' + ","
-            query += '"' + str(row[len(row) - 1]).replace('"', " ") + '"' + "), \n"
-        query += "("
-        row = table_values[len(table_values) - 1]
-        for i in row[: len(row) - 1]:
-            query += '"' + str(i).replace('"', " ") + '"' + ","
-        query += '"' + str(row[len(row) - 1]).replace('"', " ") + '"' + ")"
-        query += ";"
+            query += '"' + str(row[len(row) - 1]).replace('"', " ") + '"' + ")"
+            query += ";"
+        else:
+            query = "INSERT INTO " + table_name + " VALUES \n"
+            for row in table_values[: len(table_values) - 1]:
+                query += "("
+                for i in row[: len(row) - 1]:
+                    query += '"' + str(i).replace('"', " ") + '"' + ","
+                query += '"' + str(row[len(row) - 1]).replace('"', " ") + '"' + "), \n"
+
+            query += "("
+            row = table_values[len(table_values) - 1]
+            for i in row[: len(row) - 1]:
+                query += '"' + str(i).replace('"', " ") + '"' + ","
+            query += '"' + str(row[len(row) - 1]).replace('"', " ") + '"' + ")"
+            query += ";"
 
         try:
             self.cursor.execute(query)
         except sqlite3.Error as error:
             print("Error: ", error)
 
-    def create_table(self, table_name, table_col_names):
+    def create_table(self, table_name, table_col_names, index_col=False):
         table_data = "("
+
+        if index_col is True:
+            table_data += "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+
         for name in table_col_names:
             table_data += str(name)
             table_data += ","

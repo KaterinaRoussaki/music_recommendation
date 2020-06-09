@@ -2,74 +2,98 @@ import pathlib
 
 import connection as connection
 
-# from .queries import (
-#     artist_mbtags_insert,
-#     likes_insert,
-#     user_msd_insert,
-#     user_track_id_insert,
-# )
+import queries
 
 
 def data_normalization():
     dir_path = pathlib.Path(__file__).parent.absolute().as_posix()
+    data_path = dir_path + "/data/"
 
-    csv_path = dir_path.replace("db", "csv") + "/"
-    db_data_path =  dir_path + "/data/"
-
-    music_db = f"{dir_path}/metadata/music.db"
-    artist_db = f"{dir_path}/metadata/artist_term.db"
-    track_metadata_db = f"{dir_path}/metadata/track_metadata.db"
+    music_db = f"{data_path}music.db"
+    artist_db = f"{data_path}artist_term.db"
+    track_metadata_db = f"{data_path}track_metadata.db"
 
     # make the track_metada.csv from the track_metadata.db
-    # con = connection.Connection(track_metadata_db)
-    # con.export_table(
-    #     "songs",
-    #     "track_metadata",
-    #     dir_path.replace("db", "csv"),
-    #     [
-    #         "release text",
-    #         "artist_mbid text",
-    #         "artist_familiarity real",
-    #         "artist_hotttnesss real",
-    #         "track_7digitalid int",
-    #         "shs_perf int",
-    #         "shs_work int",
-    #     ],
-    #     header=True,
-    # )
-    # del con
+    con = connection.Connection(track_metadata_db)
+    con.export_table(
+        "songs",
+        "track_metadata",
+        data_path,
+        [
+            "release text",
+            "artist_mbid text",
+            "artist_familiarity real",
+            "artist_hotttnesss real",
+            "track_7digitalid int",
+            "shs_perf int",
+            "shs_work int",
+        ],
+        header=True,
+    )
+    del con
 
     # make the artist_mbtags.csv from the artist_mbtags.db
-    # con = connection.Connection(artist_db)
-    # con.export_table(
-    #     "artist_mbtag", "artist_mbtag", dir_path.replace("db", "csv"), header=True
-    # )
-    # del con
+    con = connection.Connection(artist_db)
+    con.export_table("artist_mbtag", "artist_mbtag", data_path, header=True)
+    del con
 
-    # add the csv files as tables in the music db
+    # open the connection with the main db
     con = connection.Connection(music_db)
 
-    # csv_path = track_metadata_db.replace("db", "csv")
-    # csv_path = csv_path.replace("/data", "")
-    # con.csv_to_table(csv_path, "songs")
+    # add the csv files as tables in the music db
+    con.csv_to_table(data_path + "/artist_mbtag.csv", "artist_mbtag")
+    con.csv_to_table(
+        data_path + "/track_metadata.csv", "track_metadata", index_col=True
+    )
+    con.csv_to_table(data_path + "/likes.tsv", "user_jam", is_csv=False)
+    con.csv_to_table(data_path + "/jam_to_msd.tsv", "jam_to_msd", is_csv=False)
 
-    # file_path = csv_path + "artist_mbtag.csv"
-    # con.csv_to_table(file_path, "artist_mbtag")
+    # make useful tables
+    con.create_table("artist_mbtags", ["artist_id text", "mbtags text"])
+    con.create_table("user_msd", ["user_id text", "track_id text"])
+    con.create_table("user_track", ["user_id text", "row_id text"])
+    con.create_table("likes", ["user_id text", "track_id text"])
+    con.create_table(
+        "songs",
+        [
+            "track_id int",
+            "title text",
+            "artist_name text",
+            "duration real",
+            "year int",
+            "mbtags text",
+        ],
+    )
 
-    file_path = csv_path + "likes.tsv"
-    con.csv_to_table(file_path, "user_track", is_csv=False)
+    # execute the
+    con.execute_query(queries.artist_mbtags_insert)
+    con.execute_query(queries.user_msd_insert)
+    con.execute_query(queries.user_track_id_insert)
+    con.execute_query(queries.likes_insert)
+    con.execute_query(queries.songs_insert)
+    con.execute_query(queries.songs_update_year)
 
-    file_path = csv_path + "jam_to_msd.tsv"
-    con.csv_to_table(file_path, "user_msd", is_csv=False)
+    del con
 
-    # execute queries to manipulate the data form in order to make the desired input data
-    # con.create_table("artist_mbtags", ["artist_id TEXT", "mbtags TEXT"])
-    # con.create_table("user_msd", ["user_id TEXT", "track_id TEXT"])
-    # con.create_table("user_track", ["user_id TEXT", "row_id TEXT"])
-    # con.create_table("likes", ["user_id TEXT", "row_id TEXT"])
+
+def clean_music_db():
+    dir_path = pathlib.Path(__file__).parent.absolute().as_posix()
+    data_path = dir_path + "/data/"
+
+    music_db = f"{data_path}music.db"
+    con = connection.Connection(music_db)
+
+    con.drop_table("artist_mbtag")
+    con.drop_table("artist_mbtags")
+    con.drop_table("jam_to_msd")
+    con.drop_table("user_msd")
+    con.drop_table("user_track")
+    con.drop_table("user_jam")
+    con.drop_table("track_metadata")
 
     del con
 
 
 if __name__ == "__main__":
-    data_normalization()
+    # data_normalization()
+    clean_music_db()
