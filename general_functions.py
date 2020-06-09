@@ -1,7 +1,9 @@
+import os
 import pathlib
 
 import pandas as pd
 
+from db import data_creation
 
 """
 Read a csv file and returns it's content as an array
@@ -30,3 +32,23 @@ Takes a string and it splits it
 
 def split_string(string, separator):
     return string.split(separator)
+
+
+"""
+If the program data does not exist make it from the scratch
+
+@:param str file_path
+@:param str file_path
+
+@:return 
+"""
+
+
+def check_input_data():
+    csv_path = pathlib.Path(__file__).parent.absolute().as_posix() + "/csv/"
+
+    likes_path = csv_path + "likes.csv"
+    songs_path = csv_path + "songs.csv"
+
+    if os.path.exists(likes_path) is False and os.path.exists(songs_path) is False:
+        data_creation()

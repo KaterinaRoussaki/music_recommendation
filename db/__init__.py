@@ -2,7 +2,7 @@ import pathlib
 
 import connection as connection
 
-import queries
+from db import sql_queries
 
 
 def data_normalization(data_path):
@@ -63,12 +63,12 @@ def data_normalization(data_path):
     )
 
     # execute the queries
-    con.execute_query(queries.artist_mbtags_insert)
-    con.execute_query(queries.user_msd_insert)
-    con.execute_query(queries.user_track_id_insert)
-    con.execute_query(queries.likes_insert)
-    con.execute_query(queries.songs_insert)
-    con.execute_query(queries.songs_update_year)
+    con.execute_query(sql_queries.artist_mbtags_insert)
+    con.execute_query(sql_queries.user_msd_insert)
+    con.execute_query(sql_queries.user_track_id_insert)
+    con.execute_query(sql_queries.likes_insert)
+    con.execute_query(sql_queries.songs_insert)
+    con.execute_query(sql_queries.songs_update_year)
 
     del con
 
