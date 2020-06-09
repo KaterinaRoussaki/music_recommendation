@@ -83,7 +83,7 @@ class Connection:
         table_data = "("
 
         if index_col is True:
-            table_data += "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+            table_data += "id INTEGER PRIMARY KEY, "
 
         for name in table_col_names:
             table_data += str(name)
