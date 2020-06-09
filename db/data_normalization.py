@@ -5,10 +5,7 @@ import connection as connection
 import queries
 
 
-def data_normalization():
-    dir_path = pathlib.Path(__file__).parent.absolute().as_posix()
-    data_path = dir_path + "/data/"
-
+def data_normalization(data_path):
     music_db = f"{data_path}music.db"
     artist_db = f"{data_path}artist_term.db"
     track_metadata_db = f"{data_path}track_metadata.db"
@@ -48,7 +45,7 @@ def data_normalization():
     con.csv_to_table(data_path + "/likes.tsv", "user_jam", is_csv=False)
     con.csv_to_table(data_path + "/jam_to_msd.tsv", "jam_to_msd", is_csv=False)
 
-    # make useful tables
+    # add tables the tables that we will use for our queries
     con.create_table("artist_mbtags", ["artist_id text", "mbtags text"])
     con.create_table("user_msd", ["user_id text", "track_id text"])
     con.create_table("user_track", ["user_id text", "row_id text"])
@@ -65,7 +62,7 @@ def data_normalization():
         ],
     )
 
-    # execute the
+    # execute the queries
     con.execute_query(queries.artist_mbtags_insert)
     con.execute_query(queries.user_msd_insert)
     con.execute_query(queries.user_track_id_insert)
@@ -76,11 +73,21 @@ def data_normalization():
     del con
 
 
-def clean_music_db():
-    dir_path = pathlib.Path(__file__).parent.absolute().as_posix()
-    data_path = dir_path + "/data/"
-
+def project_input_export(dir_path, data_path):
     music_db = f"{data_path}music.db"
+
+    con = connection.Connection(music_db)
+
+    con.export_table("songs", "songs", dir_path.replace("db", "csv"))
+
+    con.export_table("likes", "likes", dir_path.replace("db", "csv"))
+
+    del con
+
+
+def clean_intermediate_tables(data_path):
+    music_db = f"{data_path}music.db"
+
     con = connection.Connection(music_db)
 
     con.drop_table("artist_mbtag")
@@ -94,6 +101,9 @@ def clean_music_db():
     del con
 
 
-if __name__ == "__main__":
-    # data_normalization()
-    clean_music_db()
+def data_creation():
+    dir_path = pathlib.Path(__file__).parent.absolute().as_posix()
+    data_path = dir_path + "/data/"
+    data_normalization(data_path)
+    clean_intermediate_tables(data_path)
+    project_input_export(dir_path, data_path)
