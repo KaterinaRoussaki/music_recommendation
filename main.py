@@ -1,10 +1,12 @@
 from collect_data_functions import return_all_item_set_bpa_dicts
 from DemsterShafer import DempsterShafer as Ds
+from general_functions import check_input_data
 
 
 def main():
 
-    # if the input doesn't exist
+    # if the two input csv files don't exist make them from the scratch
+    check_input_data()
 
     dictionaries = return_all_item_set_bpa_dicts()
 

@@ -2,6 +2,7 @@ from pyds import MassFunction
 
 
 class DempsterShafer:
+
     """
 
     Returns an array with mass_functions of a array of dictionaries

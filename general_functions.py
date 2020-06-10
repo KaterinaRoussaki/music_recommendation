@@ -3,7 +3,7 @@ import pathlib
 
 import pandas as pd
 
-from db import data_creation
+from db.data_normalization import data_creation
 
 
 """

@@ -5,6 +5,7 @@ import pandas
 
 
 class Connection:
+
     sqlite_connection = None
 
     def __init__(self, db_name):
@@ -20,11 +21,31 @@ class Connection:
             self.sqlite_connection.commit()
             self.cursor.close()
 
+    """
+    
+    Executes a custom query 
+    
+    @:param query: str
+    
+    """
+
     def execute_query(self, query):
         try:
             self.cursor.execute(query)
         except sqlite3.Error as error:
             print("Error: ", error)
+
+    """
+
+    Makes a new table from a csv and insert to it data
+    
+    @:param file_path: str
+    @:param table_name: str
+    @:param delete_columns: str array
+    @:param is_csv: boolean ( if the file is csv separated="," or tsv separated=r"\t" )
+    @:param index_col: boolean ( add id primary key to the table )
+
+    """
 
     def csv_to_table(
         self, file_path, table_name, delete_columns=[], is_csv=True, index_col=False
@@ -42,6 +63,19 @@ class Connection:
 
         self.create_table(table_name, table_col_names, index_col)
 
+        self.insert(index_col, table_values, table_name)
+
+    """
+
+    Inserts data in a table
+
+    @:param index_col: boolean
+    @:param table_name: str
+    @:param table_name: numpy array
+
+    """
+
+    def insert(self, index_col, table_values, table_name):
         if index_col is True:
             row_id = 1
 
@@ -79,6 +113,14 @@ class Connection:
         except sqlite3.Error as error:
             print("Error: ", error)
 
+    """
+
+    Export a table to a csv file 
+
+    @:param table_name: str
+
+    """
+
     def create_table(self, table_name, table_col_names, index_col=False):
         table_data = "("
 
@@ -102,6 +144,14 @@ class Connection:
         query = "DROP TABLE IF EXISTS '%s';"
         self.cursor.execute(query % table_name)
 
+    """
+    
+    Export a table to a csv file 
+
+    @:param table_name: str
+
+    """
+
     def find_column_data(self, table_name):
         query = "PRAGMA table_info('%s') ;"
 
@@ -117,6 +167,20 @@ class Connection:
 
         except sqlite3.Error as error:
             print("Error: ", error)
+
+    """
+    
+    Export a table to a csv file 
+
+    @:param table_name: str
+    @:param export_name: str
+    @:param dir_path: str
+    @:param delete_columns: str array ( columns that wont be exported )
+    @:param limit: int (  )
+    @:param index: boolean (adds an index to the csv)
+    @:param header: boolean ( add the column named to the csv )
+    
+    """
 
     def export_table(
         self,
@@ -152,6 +216,18 @@ class Connection:
 
         except sqlite3.Error as error:
             print("Error: ", error)
+
+    """
+
+    Makes a csv 
+
+    @:param column_names: str array
+    @:param csv_name: str
+    @:param delete_columns: str array
+    @:param index: boolean (adds an index to the csv)
+    @:param header: boolean ( add a header to the csv )
+
+    """
 
     @staticmethod
     def export_csv(

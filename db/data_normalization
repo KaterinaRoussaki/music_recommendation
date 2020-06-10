@@ -2,6 +2,12 @@ import pathlib
 
 from db import sql_queries, connection
 
+"""
+
+Normalizes the input data and creates the desired music.db in order to export the input for the RS
+
+"""
+
 
 def data_normalization(data_path):
     music_db = f"{data_path}music.db"
@@ -32,7 +38,6 @@ def data_normalization(data_path):
     con.export_table("artist_mbtag", "artist_mbtag", data_path, header=True)
     del con
 
-    # open the connection with the main db
     con = connection.Connection(music_db)
 
     # add the csv files as tables in the music db
@@ -43,7 +48,7 @@ def data_normalization(data_path):
     con.csv_to_table(data_path + "/likes.tsv", "user_jam", is_csv=False)
     con.csv_to_table(data_path + "/jam_to_msd.tsv", "jam_to_msd", is_csv=False)
 
-    # add tables the tables that we will use for our queries
+    # add intermediate tables in order to make the suitable queries
     con.create_table("artist_mbtags", ["artist_id text", "mbtags text"])
     con.create_table("user_msd", ["user_id text", "track_id text"])
     con.create_table("user_track", ["user_id text", "row_id text"])
@@ -71,6 +76,13 @@ def data_normalization(data_path):
     del con
 
 
+"""
+
+Exports the input data (likes.csv and song.csv) for the RS
+
+"""
+
+
 def project_input_export(dir_path, data_path):
     music_db = f"{data_path}music.db"
 
@@ -81,6 +93,13 @@ def project_input_export(dir_path, data_path):
     con.export_table("likes", "likes", dir_path.replace("db", "csv"))
 
     del con
+
+
+"""
+
+Cleans the intermediate tables from the music database in order to be tidy for future use
+
+"""
 
 
 def clean_intermediate_tables(data_path):
