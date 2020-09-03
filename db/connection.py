@@ -5,7 +5,6 @@ import pandas
 
 
 class Connection:
-
     sqlite_connection = None
 
     def __init__(self, db_name):
@@ -22,11 +21,9 @@ class Connection:
             self.cursor.close()
 
     """
-    
-    Executes a custom query 
-    
-    @:param query: str
-    
+        Executes a custom query 
+        
+        @:param query: str
     """
 
     def execute_query(self, query):
@@ -36,15 +33,13 @@ class Connection:
             print("Error: ", error)
 
     """
-
-    Makes a new table from a csv and insert to it data
-    
-    @:param file_path: str
-    @:param table_name: str
-    @:param delete_columns: str array
-    @:param is_csv: boolean ( if the file is csv separated="," or tsv separated=r"\t" )
-    @:param index_col: boolean ( add id primary key to the table )
-
+        Makes a new table from a csv and insert to it data
+        
+        @:param file_path: str
+        @:param table_name: str
+        @:param delete_columns: str array
+        @:param is_csv: boolean ( if the file is csv separated="," or tsv separated=r"\t" )
+        @:param index_col: boolean ( add id primary key to the table )
     """
 
     def csv_to_table(
@@ -66,13 +61,11 @@ class Connection:
         self.insert(index_col, table_values, table_name)
 
     """
-
-    Inserts data in a table
-
-    @:param index_col: boolean
-    @:param table_name: str
-    @:param table_name: numpy array
-
+        Inserts data in a table
+    
+        @:param index_col: boolean
+        @:param table_name: str
+        @:param table_name: numpy array
     """
 
     def insert(self, index_col, table_values, table_name):
@@ -114,11 +107,9 @@ class Connection:
             print("Error: ", error)
 
     """
-
-    Export a table to a csv file 
-
-    @:param table_name: str
-
+        Export a table to a csv file 
+    
+        @:param table_name: str
     """
 
     def create_table(self, table_name, table_col_names, index_col=False):
@@ -145,11 +136,9 @@ class Connection:
         self.cursor.execute(query % table_name)
 
     """
+        Export a table to a csv file 
     
-    Export a table to a csv file 
-
-    @:param table_name: str
-
+        @:param table_name: str
     """
 
     def find_column_data(self, table_name):
@@ -169,17 +158,15 @@ class Connection:
             print("Error: ", error)
 
     """
+        Export a table to a csv file 
     
-    Export a table to a csv file 
-
-    @:param table_name: str
-    @:param export_name: str
-    @:param dir_path: str
-    @:param delete_columns: str array ( columns that wont be exported )
-    @:param limit: int (  )
-    @:param index: boolean (adds an index to the csv)
-    @:param header: boolean ( add the column named to the csv )
-    
+        @:param table_name: str
+        @:param export_name: str
+        @:param dir_path: str
+        @:param delete_columns: str array ( columns that wont be exported )
+        @:param limit: int (  )
+        @:param index: boolean (adds an index to the csv)
+        @:param header: boolean ( add the column named to the csv )
     """
 
     def export_table(
@@ -218,15 +205,13 @@ class Connection:
             print("Error: ", error)
 
     """
-
-    Makes a csv 
-
-    @:param column_names: str array
-    @:param csv_name: str
-    @:param delete_columns: str array
-    @:param index: boolean (adds an index to the csv)
-    @:param header: boolean ( add a header to the csv )
-
+        Makes a csv 
+    
+        @:param column_names: str array
+        @:param csv_name: str
+        @:param delete_columns: str array
+        @:param index: boolean (adds an index to the csv)
+        @:param header: boolean ( add a header to the csv )
     """
 
     @staticmethod
