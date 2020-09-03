@@ -1,17 +1,16 @@
+import os
 import pathlib
 
-from db import sql_queries, connection
+from db import connection, sql_queries
+
 
 """
-
-Normalizes the input data and creates the desired music.db in order to export the input for the RS
-
+    Normalizes the input data and creates the desired music.db in order to export the input for the RS
 """
 
 
-def data_normalization(data_path):
+def data_normalization(data_path, song_number):
     music_db = f"{data_path}music.db"
-    artist_db = f"{data_path}artist_term.db"
     track_metadata_db = f"{data_path}track_metadata.db"
 
     # make the track_metada.csv from the track_metadata.db
@@ -21,7 +20,6 @@ def data_normalization(data_path):
         "track_metadata",
         data_path,
         [
-            "release text",
             "artist_mbid text",
             "artist_familiarity real",
             "artist_hotttnesss real",
@@ -29,19 +27,14 @@ def data_normalization(data_path):
             "shs_perf int",
             "shs_work int",
         ],
+        limit=song_number,
         header=True,
     )
-    del con
-
-    # make the artist_mbtags.csv from the artist_mbtags.db
-    con = connection.Connection(artist_db)
-    con.export_table("artist_mbtag", "artist_mbtag", data_path, header=True)
     del con
 
     con = connection.Connection(music_db)
 
     # add the csv files as tables in the music db
-    con.csv_to_table(data_path + "/artist_mbtag.csv", "artist_mbtag")
     con.csv_to_table(
         data_path + "/track_metadata.csv", "track_metadata", index_col=True
     )
@@ -49,24 +42,22 @@ def data_normalization(data_path):
     con.csv_to_table(data_path + "/jam_to_msd.tsv", "jam_to_msd", is_csv=False)
 
     # add intermediate tables in order to make the suitable queries
-    con.create_table("artist_mbtags", ["artist_id text", "mbtags text"])
-    con.create_table("user_msd", ["user_id text", "track_id text"])
-    con.create_table("user_track", ["user_id text", "row_id text"])
-    con.create_table("likes", ["user_id text", "track_id text"])
     con.create_table(
         "songs",
         [
             "track_id int",
             "title text",
             "artist_name text",
-            "duration real",
             "year int",
-            "mbtags text",
+            "release text",
+            "duration real",
         ],
     )
+    con.create_table("user_msd", ["user_id text", "track_id text"])
+    con.create_table("user_track", ["user_id text", "row_id text"])
+    con.create_table("likes", ["user_id text", "track_id text"])
 
     # execute the queries
-    con.execute_query(sql_queries.artist_mbtags_insert)
     con.execute_query(sql_queries.user_msd_insert)
     con.execute_query(sql_queries.user_track_id_insert)
     con.execute_query(sql_queries.likes_insert)
@@ -77,9 +68,7 @@ def data_normalization(data_path):
 
 
 """
-
-Exports the input data (likes.csv and song.csv) for the RS
-
+    Exports the input data (likes.csv and song.csv) for the RS
 """
 
 
@@ -89,16 +78,16 @@ def project_input_export(dir_path, data_path):
     con = connection.Connection(music_db)
 
     con.export_table("songs", "songs", dir_path.replace("db", "csv"))
+    con.drop_table("songs")
 
     con.export_table("likes", "likes", dir_path.replace("db", "csv"))
+    con.drop_table("likes")
 
     del con
 
 
 """
-
-Cleans the intermediate tables from the music database in order to be tidy for future use
-
+    Cleans the intermediate tables from the music database in order to be tidy for future use
 """
 
 
@@ -107,8 +96,6 @@ def clean_intermediate_tables(data_path):
 
     con = connection.Connection(music_db)
 
-    con.drop_table("artist_mbtag")
-    con.drop_table("artist_mbtags")
     con.drop_table("jam_to_msd")
     con.drop_table("user_msd")
     con.drop_table("user_track")
@@ -118,9 +105,19 @@ def clean_intermediate_tables(data_path):
     del con
 
 
-def data_creation():
+def delete_intermediate_files(data_path):
+    os.remove(data_path + "track_metadata.csv")
+
+
+def delete_music_db(data_path):
+    os.remove(data_path + "music.db")
+
+
+def data_creation(song_number):
     dir_path = pathlib.Path(__file__).parent.absolute().as_posix()
     data_path = dir_path + "/data/"
-    data_normalization(data_path)
+    data_normalization(data_path, song_number)
     clean_intermediate_tables(data_path)
     project_input_export(dir_path, data_path)
+    delete_intermediate_files(data_path)
+    delete_music_db(data_path)

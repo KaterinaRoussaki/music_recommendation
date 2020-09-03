@@ -43,8 +43,10 @@ class Connection:
     """
 
     def csv_to_table(
-        self, file_path, table_name, delete_columns=[], is_csv=True, index_col=False
+        self, file_path, table_name, delete_columns=None, is_csv=True, index_col=False
     ):
+        if delete_columns is None:
+            delete_columns = []
         if is_csv is True:
             csv_file = pandas.read_csv(file_path, sep=",", engine="python")
         else:
@@ -109,7 +111,7 @@ class Connection:
     """
         Export a table to a csv file 
     
-        @:param table_name: str
+        @:param table_name: str   
     """
 
     def create_table(self, table_name, table_col_names, index_col=False):
@@ -174,11 +176,13 @@ class Connection:
         table_name,
         export_name,
         dir_path,
-        delete_columns=[],
+        delete_columns=None,
         limit=-1,
         index=False,
         header=False,
     ):
+        if delete_columns is None:
+            delete_columns = []
         query = "SELECT * FROM '%s'"
         if limit != -1:
             query += "LIMIT "
@@ -216,8 +220,10 @@ class Connection:
 
     @staticmethod
     def export_csv(
-        records, column_names, csv_name, delete_columns=[], index=False, header=False
+        records, column_names, csv_name, delete_columns=None, index=False, header=False
     ):
+        if delete_columns is None:
+            delete_columns = []
         col_num = len(column_names)
         record_array = []
 
