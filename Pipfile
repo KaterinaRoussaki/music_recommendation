@@ -10,6 +10,8 @@ db-sqlite3 = "*"
 pandas = "*"
 py-dempster-shafer = "*"
 pathlib = "*"
+scipy = "*"
+jupyter = "*"
 
 [requires]
 python_version = "3.6"
