@@ -1,9 +1,14 @@
 # Music Recommendation System with the use of Dempster Shafer Theory of Evidence
 
+<br/>
+
 ### Overview
 This is a Music Recommendation System which makes song recommendations for homogenous user groups. We will use the 
 Dempster Shafer Theory of Evidence in this project. More specifically we will use the Dempster rule of combination which 
 is implemented by a [Monte-Carlo algorithm](https://pypi.org/project/py_dempster_shafer/#description).
+
+<br/>
+<br/>
 
 ### Requirements
 
@@ -18,9 +23,11 @@ These are the following:
 4. [pathlib](https://pypi.org/project/pathlib/)
 5. [scipy](https://pypi.org/project/scipy/)
 
-> You can install them by using the `pip`. Another way is to use the [`pipenv`](https://realpython.com/pipenv-guide/) method so that you can have a pip 
+> You can install them by using the `pip`. 
+>>Another way is to use the [`pipenv`](https://realpython.com/pipenv-guide/) method so that you can have a pip 
 environment only for this project.  
 
+<br/>
 
 ### Structure
 
@@ -33,6 +40,9 @@ environment only for this project.
 * `/db/` : code that have to do with data manipulation, SQLite queries and SQLite database communications.
 
 * `/` : main code, general functions etc.
+
+<br/>
+<br/>
 
 ### Input Data
 
@@ -52,13 +62,14 @@ contains the connection between the jams and the tracks of the track_metadata.db
 
 > All the above data must be contained inside the "/db/data" folder of the model.
 
+<br/>
+<br/>
+
 ### Application 
 
 ##### Main
 
 The application starts from the `main()` which can be found in the main.py. 
-
----
 
 ###### Input 
 The function 
@@ -74,7 +85,6 @@ After the construction of the two files we need to read them and store them as t
 [`read_data()`](https://github.com/KaterinaRoussaki/music_recommendation/blob/c482b5b76aee7976b9fad3d957fb6a9bc878d0ab/collect_data_functions.py#L12) 
 will be used for this task.
 
----
 
 ###### Basic probability assignments
 
@@ -103,10 +113,17 @@ corresponding item sets. Thus we will use the function
 
 4. Return an array with all the **item_set-bpa dictionaries**.
 
----
 
 ###### Find the Mass Functions
 
+Now that we have the **item_set-bpa dictionaries** we need to find the mass functions of each feature set in 
+each dictionary. As you can see in the function 
+[`mass_functions_from_dictionaries(dictionary_array)`](https://github.com/KaterinaRoussaki/music_recommendation/blob/e99f72147f7a849b1aacbb4b5c1a53cc721af9d7/DemsterShafer.py#L36)
+from the **item_set-bpa dictionaries** array we can return an array with all the mass functions by using the 
+function `MassFunction()` of the library [py-dempster-shafer](https://pypi.org/project/py_dempster_shafer/).
+
 ###### Dempster Rule of Combination
+
+With the array with the mass functions of all the features 
 
 ###### Song Set Desirability
