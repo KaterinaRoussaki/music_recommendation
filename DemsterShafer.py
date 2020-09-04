@@ -1,27 +1,6 @@
 from pyds import MassFunction
 
 
-"""
-    Searches all the item sets and returns the best item suggestions
-    
-    @:param mass_functions = all the mass functions in a dictionary form 
-    @:param threshold
-    @:returns set
-"""
-
-
-def find_desirable_sets(mass_functions, threshold, conservation_degree=0):
-    item_set = set()
-
-    for key in mass_functions:
-        if DempsterShafer.set_desirability(
-            mass_functions, key, conservation_degree, threshold
-        ):
-            item_set = item_set.union(key)
-
-    return item_set
-
-
 class DempsterShafer:
     """
 
@@ -65,12 +44,20 @@ class DempsterShafer:
     """
 
     @staticmethod
-    def ds_mc_combination_rule(mass_function_array):
+    def ds_mc_combination_rule(
+        mass_function_array,
+        sample_count=1000,
+        importance_sampling=True,
+        normalization=True,
+    ):
         monte_carlo = mass_function_array[0] & mass_function_array[1]
 
         for mass_function in mass_function_array[2:]:
             monte_carlo = monte_carlo.combine_conjunctive(
-                mass_function, sample_count=1000, importance_sampling=True
+                mass_function,
+                sample_count=sample_count,
+                importance_sampling=importance_sampling,
+                normalization=normalization
             )
 
         return monte_carlo
@@ -130,16 +117,3 @@ class DempsterShafer:
         @:param item_set
         @:returns boolean 
     """
-
-    @staticmethod
-    def set_desirability(mass_function, item_set, conservation_degree, threshold=0.5):
-        plausibility = mass_function.pl(item_set)
-        belief = mass_function.bel(item_set)
-        desirability = (
-            conservation_degree * plausibility + (1 - conservation_degree) * belief
-        )
-
-        if desirability > threshold:
-            return True
-        else:
-            return False

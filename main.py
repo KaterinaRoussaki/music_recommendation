@@ -1,6 +1,6 @@
 from collect_data_functions import read_data, return_all_item_set_bpa_dicts
 from DemsterShafer import DempsterShafer as Ds
-from DemsterShafer import find_desirable_sets
+from desirability import find_desirable_sets
 from general_functions import create_input_data, print_song_sets
 
 

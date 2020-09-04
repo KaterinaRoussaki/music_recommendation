@@ -5,6 +5,7 @@ import pandas as pd
 
 from db.data_normalization import data_creation
 
+
 """
     Read a csv file and returns it's content as an array
     
