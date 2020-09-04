@@ -5,6 +5,23 @@ This is a Music Recommendation System which makes song recommendations for homog
 Dempster Shafer Theory of Evidence in this project. More specifically we will use the Dempster rule of combination which 
 is implemented by a [Monte-Carlo algorithm](https://pypi.org/project/py_dempster_shafer/#description).
 
+### Requirements
+
+The python version used is the "3.6"
+
+The application uses external libraries which need to be installed in order for the application to be runnable. 
+These are the following:
+
+1. [pandas](https://pandas.pydata.org/pandas-docs/stable/getting_started/install.html)
+2. [db-sqlite3](https://pypi.org/project/db-sqlite3/)
+3. [py-dempster-shafer](https://pypi.org/project/py_dempster_shafer/)
+4. [pathlib](https://pypi.org/project/pathlib/)
+5. [scipy](https://pypi.org/project/scipy/)
+
+> You can install them by using the `pip`. Another way is to use the [`pipenv`](https://realpython.com/pipenv-guide/) method so that you can have a pip 
+environment only for this project.  
+
+
 ### Structure
 
 * `/csv/` : here we can find the  likes.csv and song.csv files that we will use as an input for our program.
