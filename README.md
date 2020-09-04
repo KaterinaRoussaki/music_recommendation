@@ -58,22 +58,52 @@ contains the connection between the jams and the tracks of the track_metadata.db
 
 The application starts from the `main()` which can be found in the main.py. 
 
+---
+
 ###### Input 
-The function `create_input_data(song_number, clean_old_files=False)` is used to begin constructing the  input data.
+The function 
+[`create_input_data(song_number, clean_old_files=False)`](https://github.com/KaterinaRoussaki/music_recommendation/blob/c482b5b76aee7976b9fad3d957fb6a9bc878d0ab/general_functions.py#L42) 
+is used to begin constructing the  input data.
+
 * The `song_number` denotes the number of the records that the file songs.csv will have.
-* iF the parameter `clean_old_files` is `True` will clean the likes.csv and song.csv from the csv folder, by default 
+
+* If the parameter `clean_old_files` is `True` will clean the likes.csv and song.csv from the csv folder, by default 
 it is False.
 
 After the construction of the two files we need to read them and store them as two `numpy` arrays. The function 
-`read_data()` will be used for this task.
+[`read_data()`](https://github.com/KaterinaRoussaki/music_recommendation/blob/c482b5b76aee7976b9fad3d957fb6a9bc878d0ab/collect_data_functions.py#L12) 
+will be used for this task.
+
+---
 
 ###### Basic probability assignments
 
-After the construction of the input files we need to construct dictionaries for each feature which will contains 
-as keys items_sets(songs) with bpa assignment greater than 0 and values their bpa. To achieve this we need to continue 
-with the following steps:
+After the construction of the input files we need to construct dictionaries for each feature which will contain 
+as keys the items_sets(songs) and values their bpa. We need only those whose bpa is greater than 0. To achieve 
+this we will use the function `return_all_item_set_bpa_dicts(likes_data, song_data)` which is constructed by 
+the following steps:
 
-1. For each dictionary we need to  
+1. For each feature type (title, artist, etc.) find all the feature sets that have bpa > 0. Then store them in 
+dictionaries (`key-> "feature_set", value->"bpa"`). 
+We use the 
+[`find_feature_set_bpa_dictionary(likes_data, feature_data, user_number)`](https://github.com/KaterinaRoussaki/music_recommendation/blob/c482b5b76aee7976b9fad3d957fb6a9bc878d0ab/collect_data_functions.py#L77)
+    * **likes_data** are the data with the user song likes
+    * **feature_data** is a feature column (titles, etc.)
+    * **user_number** the number of all the users 
+
+2. For each feature type (title, artist, etc.) make a dictionary that connects each feature with the all the song (ids) 
+that contain it. This step is implemnted by the function 
+[`feature_item_dictionary(features_array)`](https://github.com/KaterinaRoussaki/music_recommendation/blob/c482b5b76aee7976b9fad3d957fb6a9bc878d0ab/collect_data_functions.py#L103). 
+It only the feature column each time.
+
+3.  For each feature type (title, artist, etc.) replace in the feature_set-bpa dictionary the feature sets with the  
+corresponding item sets. Thus we will use the function 
+[`from_feature_to_item_dictionary(feature_user_dict, feature_item_dict)`](https://github.com/KaterinaRoussaki/music_recommendation/blob/c482b5b76aee7976b9fad3d957fb6a9bc878d0ab/collect_data_functions.py#L29)
+    * **feature_user_dict** the feature_set-bpa
+
+4. Return an array with all the **item_set-bpa dictionaries**.
+
+---
 
 ###### Find the Mass Functions
 
