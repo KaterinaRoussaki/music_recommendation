@@ -57,7 +57,7 @@ class DempsterShafer:
                 mass_function,
                 sample_count=sample_count,
                 importance_sampling=importance_sampling,
-                normalization=normalization
+                normalization=normalization,
             )
 
         return monte_carlo
