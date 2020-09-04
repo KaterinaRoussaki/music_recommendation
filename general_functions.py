@@ -34,8 +34,8 @@ def split_string(string, separator):
 """
     If the program data does not exist make it from the scratch
     
-    @:param str file_path
-    @:param str file_path
+    @:param int song_number
+    @:param boolean clean_old_files
 """
 
 
@@ -61,7 +61,7 @@ def create_input_data(song_number, clean_old_files=False):
 """
 
 
-class print_options:
+class PrintOptions:
     BLUE = "\033[94m"
     ENDC = "\033[0m"
     BOLD = "\033[1m"
@@ -73,7 +73,7 @@ class print_options:
 
 
 def bold_print(string):
-    print(print_options.BOLD, string)
+    print(PrintOptions.BOLD, string)
 
 
 """
@@ -102,9 +102,9 @@ def print_song(song_data, song_id):
     artist_name = str(artist_name).replace("  ", " ")
     release = str(release).replace("  ", " ")
     print(
-        print_options.BLUE,
+        PrintOptions.BLUE,
         track_id,
-        print_options.ENDC,
+        PrintOptions.ENDC,
         ",",
         title,
         ",",
