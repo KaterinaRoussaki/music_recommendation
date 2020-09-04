@@ -67,9 +67,9 @@ contains the connection between the jams and the tracks of the track_metadata.db
 
 ### Application 
 
-##### Main
-
 The application starts from the `main()` which can be found in the main.py. 
+
+<br/>
 
 ###### Input 
 The function 
@@ -85,6 +85,7 @@ After the construction of the two files we need to read them and store them as t
 [`read_data()`](https://github.com/KaterinaRoussaki/music_recommendation/blob/c482b5b76aee7976b9fad3d957fb6a9bc878d0ab/collect_data_functions.py#L12) 
 will be used for this task.
 
+<br/>
 
 ###### Basic probability assignments
 
@@ -113,6 +114,7 @@ corresponding item sets. Thus we will use the function
 
 4. Return an array with all the **item_set-bpa dictionaries**.
 
+<br/>
 
 ###### Find the Mass Functions
 
@@ -122,8 +124,55 @@ each dictionary. As you can see in the function
 from the **item_set-bpa dictionaries** array we can return an array with all the mass functions by using the 
 function `MassFunction()` of the library [py-dempster-shafer](https://pypi.org/project/py_dempster_shafer/).
 
+<br/>
+
 ###### Dempster Rule of Combination
 
-With the array with the mass functions of all the features 
+The next step is to combine all the mass functions until only the last remains. We will do this with the Monte Carlo 
+implementation of the Dempster rule of combination. Then we can find for each set in the final mass function it's 
+plausibility and it's belief according to the 
+[Dempster Shafer Theory of Evidence](https://en.wikipedia.org/wiki/Dempster%E2%80%93Shafer_theory).  
+All these implementations are made inside the Class 
+[`DempsterShafer`](https://github.com/KaterinaRoussaki/music_recommendation/blob/e99f72147f7a849b1aacbb4b5c1a53cc721af9d7/DemsterShafer.py#L25)
+
+* **`ds_combination_rule(mass_function_array)`** : simple implementation of Dempster rule of combination. Needs only 
+the final mass function 
+
+* **`def ds_mc_combination_rule(mass_function_array, sample_count=1000, importance_sampling=True, normalization=True)`**
+: the implementation of Dempster rule of combination with the Monte-Carlo algorithm. The parameters of the function are:
+    * **mass_function_array** the mass function array
+    * **sample_count** controls the sampling for the algorithm
+    * **importance_sampling** true if we need the sampling
+    * **normalization** true if we need the normalization
+
+* **`return_belief(item_dict, mass_function)`** : returns the belief of an item set
+
+* **`return_entire_belief(mass_function)`** : returns the belief of every item set that exist in the mass function
+
+* **`return_plausibility(item_dict, mass_function)`** : returns the plausibility of an item set
+
+* **`return_entire_plausibility(mass_function)`** : returns the plausibility of every item set that exist in the mass function
+
+<br/>
 
 ###### Song Set Desirability
+
+The last step is to find the most desirable songs for the user group. Thus with the use of the final mass function we 
+will find the desirability of each song set.
+
+> The desirability is defined as following:
+>
+> ```desirability = (conservation_degree * plausibility + (1 - conservation_degree) * belief') ```
+
+
+* **`find_desirable_sets(mass_functions, threshold, conservation_degree=0)`** : checks the desirability of all the item sets inside a mass function.
+    * **mass_functions** the mass function 
+    * **threshold** the threshold for the desirability
+    * **conservation_degree** the conservation degree for the desirability definition
+    
+* **`set_desirability(mass_function, item_set, conservation_degree, threshold=0.5)`**: 
+    * **item_set** the item set for which we will find it's desirability
+    * **mass_functions** the mass function 
+    * **threshold** the threshold for the desirability
+    * **conservation_degree** the conservation degree for the desirability definition
+
