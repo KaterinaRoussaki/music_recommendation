@@ -23,8 +23,8 @@ These are the following:
 4. [pathlib](https://pypi.org/project/pathlib/)
 5. [scipy](https://pypi.org/project/scipy/)
 
-> You can install them by using the `pip`. 
->>Another way is to use the [`pipenv`](https://realpython.com/pipenv-guide/) method so that you can have a pip 
+> You can install them by using the `pip` or the [`anaconda`](https://www.anaconda.com/). 
+>>You could use use the [`pipenv`](https://realpython.com/pipenv-guide/) so that you have a pip 
 environment only for this project.  
 
 <br/>
