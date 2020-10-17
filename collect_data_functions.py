@@ -1,32 +1,28 @@
 from general_functions import read_csv, split_string
 
 
-""" 
-    Reads the data from the tables likes.csv and songs.csv 
-    
-    @:return likes_data 
-    @:return song_data 
-"""
-
-
 def read_data():
+    """
+    Reads the data from the tables likes.csv and songs.csv
+
+    :return likes_data
+    :return song_data
+    """
     likes_data = read_csv("likes.csv")
     song_data = read_csv("songs.csv")
 
     return likes_data, song_data
 
 
-"""
-    It takes the feature->item dictionary and the feature->bpa dictionary and it 
-    replaces the features with their related items and returns a item->bpa dictionary
-    
-    @:param dict feature_user_dict
-    @:param dict feature_item_dict
-    @:return dict 
-"""
-
-
 def from_feature_to_item_dictionary(feature_user_dict, feature_item_dict):
+    """
+    It takes the feature->item dictionary and the feature->bpa dictionary and it
+    replaces the features with their related items and returns a item->bpa dictionary
+
+    :param feature_item_dict:
+    :param feature_user_dict:
+    :return dict
+    """
 
     for feature_set in list(feature_user_dict):
         item_set = set()
@@ -41,16 +37,14 @@ def from_feature_to_item_dictionary(feature_user_dict, feature_item_dict):
     return feature_user_dict
 
 
-"""
-    Takes the likes set of a user and it connects it with the features
-    
-    @:param set
-    @:param numpy array song_data
-    @:return set 
-"""
-
-
 def find_feature_set(user_likes, song_data):
+    """
+    Takes the likes set of a user and it connects it with the features
+
+    :param song_data:
+    :param user_likes:
+    :return set
+    """
     feature_set = set()
 
     for row_number in user_likes:
@@ -64,17 +58,15 @@ def find_feature_set(user_likes, song_data):
     return feature_set
 
 
-"""
-    Takes the likes data, song data and the user number and makes the features->bpa dictionary
-    
-    @:param numpy array likes_data
-    @:param numpy array song_data
-    @:param int user_number
-    @:return dict 
-"""
-
-
 def find_feature_set_bpa_dictionary(likes_data, feature_data, user_number):
+    """
+    Takes the likes data, song data and the user number and makes the features->bpa dictionary
+
+    :param user_number:
+    :param feature_data:
+    :param likes_data:
+    :return dict
+    """
     feature_dict = dict()
 
     for row in likes_data:
@@ -90,17 +82,15 @@ def find_feature_set_bpa_dictionary(likes_data, feature_data, user_number):
     return feature_dict
 
 
-"""
+def feature_item_dictionary(features_array):
+    """
     Returns a dictionary with the feature as keys and the items that is related as values
-    
+
     @:param numpy array song_data
     @:param numpy array item_ids_col
     @:param int feature_col
-    @:return dict 
-"""
-
-
-def feature_item_dictionary(features_array):
+    @:return dict
+    """
     feature_item_dict = dict()
 
     row_num = 0
@@ -122,17 +112,14 @@ def feature_item_dictionary(features_array):
     return feature_item_dict
 
 
-"""
-    Returns all the items-bpa dictionaries
-    
-    @:param numpy array song_data
-    @:param numpy array item_ids_col
-    @:param int feature_col
-    @:return dict 
-"""
-
-
 def return_all_item_set_bpa_dicts(likes_data, song_data):
+    """
+    Returns all the items-bpa dictionaries
+
+    :param song_data:
+    :param likes_data:
+    :return dict
+    """
     user_number = likes_data.shape[0]
     col_song_data = song_data.T.shape[0]
 
