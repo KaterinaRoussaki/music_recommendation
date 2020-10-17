@@ -6,41 +6,37 @@ import pandas as pd
 from db.data_normalization import data_creation
 
 
-"""
-    Read a csv file and returns it's content as an array
-    
-    @:param str file_path
-    @:return numpy array
-"""
-
-
 def read_csv(file_path):
+    """
+    Read a csv file and returns it's content as an array
+
+    :param file_path:
+    :return:
+    """
     folder_path = pathlib.Path(__file__).parent.absolute().as_posix() + "/csv/"
     data = pd.read_csv(folder_path + file_path, sep=",", engine="python", header=None)
     return data.values
 
 
-"""
-    Takes a string and it splits it
-    
-    @:param str file_path
-    @:param str file_path
-"""
-
-
 def split_string(string, separator):
+    """
+    Takes a string and it splits it
+
+    :param string:
+    :param separator:
+    :return:
+    """
     return str(string).split(separator)
 
 
-"""
-    If the program data does not exist make it from the scratch
-    
-    @:param int song_number
-    @:param boolean clean_old_files
-"""
-
-
 def create_input_data(song_number, clean_old_files=False):
+    """
+    If the program data does not exist make it from the scratch
+
+    :param song_number:
+    :param clean_old_files:
+    :return:
+    """
     csv_path = pathlib.Path(__file__).parent.absolute().as_posix() + "/csv/"
 
     likes_path = csv_path + "likes.csv"
@@ -57,47 +53,44 @@ def create_input_data(song_number, clean_old_files=False):
             data_creation(song_number)
 
 
-"""
-    Printing options
-"""
-
-
 class PrintOptions:
+    """
+    Printing options
+    """
+
     BLUE = "\033[94m"
     ENDC = "\033[0m"
     BOLD = "\033[1m"
 
 
-"""
-    Print a bold string
-"""
-
-
 def bold_print(string):
+    """
+    Print a bold string
+
+    :param string:
+    """
     print(PrintOptions.BOLD, string)
 
 
-"""
+def print_dict(dictionary):
+    """
     Prints a dictionary
 
-    @:param  dictionary
-"""
-
-
-def print_dict(dictionary):
+    :param dictionary:
+    :return:
+    """
     for key in dictionary:
         print(key, " ", dictionary[key])
 
 
-"""
-    Finds a song from its id and then it prints all its metadata
-    
-    @:param  song_metadata
-    @:param  song_id 
-"""
-
-
 def print_song(song_data, song_id):
+    """
+    Finds a song from its id and then it prints all its metadata
+
+    :param song_data:
+    :param song_id:
+    :return:
+    """
     [track_id, title, artist_name, year, release, duration] = song_data[song_id]
     title = str(title).replace("  ", " ")
     artist_name = str(artist_name).replace("  ", " ")
@@ -119,14 +112,13 @@ def print_song(song_data, song_id):
     )
 
 
-"""
-    Prints a set of songs with their metadata
-    
-    @:param  song_metadata
-    @:param  song_sets 
-"""
-
-
 def print_song_sets(song_data, song_sets):
+    """
+    Prints a set of songs with their metadata
+
+    :param song_data:
+    :param song_sets:
+    :return:
+    """
     for song in song_sets:
         print_song(song_data, song)
