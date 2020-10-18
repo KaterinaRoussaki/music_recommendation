@@ -6,6 +6,21 @@ import pandas as pd
 from db.data_normalization import data_creation
 
 
+def return_results_path(file_name, is_monte_carlo=True):
+    """
+    Return the path of the results file
+
+    :return:
+    """
+    folder_path = pathlib.Path(__file__).parent.absolute().as_posix() + "/results/"
+    if is_monte_carlo:
+        folder_path += "/mc/"
+    else:
+        folder_path += "/ds/"
+    file_path = folder_path + file_name
+    return file_path
+
+
 def read_csv(file_path):
     """
     Read a csv file and returns it's content as an array
@@ -83,42 +98,82 @@ def print_dict(dictionary):
         print(key, " ", dictionary[key])
 
 
-def print_song(song_data, song_id):
+def print_song(song_data, song_id, console=False):
     """
     Finds a song from its id and then it prints all its metadata
 
+    :param console:
     :param song_data:
     :param song_id:
     :return:
     """
+
     [track_id, title, artist_name, year, release, duration] = song_data[song_id]
-    title = str(title).replace("  ", " ")
-    artist_name = str(artist_name).replace("  ", " ")
-    release = str(release).replace("  ", " ")
-    print(
-        PrintOptions.BLUE,
-        track_id,
-        PrintOptions.ENDC,
-        ",",
-        title,
-        ",",
-        artist_name,
-        ",",
-        year,
-        ",",
-        release,
-        ",",
-        duration,
-    )
+
+    if console:
+        title = str(title).replace("  ", " ")
+        artist_name = str(artist_name).replace("  ", " ")
+        release = str(release).replace("  ", " ")
+        print(
+            PrintOptions.BLUE,
+            track_id,
+            PrintOptions.ENDC,
+            ",",
+            title,
+            ",",
+            artist_name,
+            ",",
+            year,
+            ",",
+            release,
+            ",",
+            duration,
+        )
+    else:
+        song = (
+            str(track_id)
+            + ","
+            + str(title)
+            + ","
+            + str(artist_name)
+            + ","
+            + str(year)
+            + ","
+            + str(release)
+            + ","
+            + str(duration)
+        )
+        return song
+
+    return ""
 
 
-def print_song_sets(song_data, song_sets):
+def print_song_sets(song_data, song_sets, console=False):
     """
     Prints a set of songs with their metadata
 
+    :param console:
     :param song_data:
     :param song_sets:
     :return:
     """
+
+    songs = ""
+
     for song in song_sets:
-        print_song(song_data, song)
+        songs += print_song(song_data, song, console)
+
+    return songs
+
+
+def print_to_file(file_name, string):
+    """
+    Prints a  string to a file
+
+    :param file_name:
+    :param string:
+    :return:
+    """
+    f = open(file_name, "w")
+    f.write(string)
+    f.close()

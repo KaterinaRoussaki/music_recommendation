@@ -1,11 +1,13 @@
-from collect_data_functions import read_data, return_all_item_set_bpa_dicts
 from DemsterShafer import DempsterShafer as Ds
-from desirability import find_desirable_sets
-from general_functions import create_input_data, print_song_sets
+from collect_data_functions import read_data, return_all_item_set_bpa_dicts
+from desirability import return_results
+from general_functions import create_input_data, return_results_path
 
 
 def main():
-    create_input_data(10000)
+    song_records = 10000
+
+    create_input_data(song_records)
 
     likes_data, songs_data = read_data()
 
@@ -13,12 +15,68 @@ def main():
 
     mass_functions = Ds.mass_functions_from_dictionaries(dictionaries)
 
-    final_mass_function = Ds.ds_mc_combination_rule(mass_functions)
+    threshold = 0.5
+    file_name = "results_rec_" + str(song_records)
 
-    final_item_sets = find_desirable_sets(final_mass_function, 0, 0.5)
+    conservation_degree = 0.3
+    mc_file_path = return_results_path(file_name + "_0_3.txt", is_monte_carlo=True)
+    ds_file_path = return_results_path(file_name + "_0_3.txt", is_monte_carlo=False)
+    return_results(
+        mc_file_path,
+        mass_functions,
+        conservation_degree,
+        threshold,
+        songs_data,
+        is_monte_carlo=True,
+    )
+    return_results(
+        ds_file_path,
+        mass_functions,
+        conservation_degree,
+        threshold,
+        songs_data,
+        is_monte_carlo=False,
+    )
 
-    print("\n The songs that we suggest to the users are the following: \n")
-    print_song_sets(songs_data, final_item_sets)
+    conservation_degree = 0.5
+    mc_file_path = return_results_path(file_name + "_0_5.txt", is_monte_carlo=True)
+    ds_file_path = return_results_path(file_name + "_0_5.txt", is_monte_carlo=False)
+    return_results(
+        mc_file_path,
+        mass_functions,
+        conservation_degree,
+        threshold,
+        songs_data,
+        is_monte_carlo=True,
+    )
+    return_results(
+        ds_file_path,
+        mass_functions,
+        conservation_degree,
+        threshold,
+        songs_data,
+        is_monte_carlo=False,
+    )
+
+    conservation_degree = 0.7
+    mc_file_path = return_results_path(file_name + "_0_7.txt", is_monte_carlo=True)
+    ds_file_path = return_results_path(file_name + "_0_7.txt", is_monte_carlo=False)
+    return_results(
+        mc_file_path,
+        mass_functions,
+        conservation_degree,
+        threshold,
+        songs_data,
+        is_monte_carlo=True,
+    )
+    return_results(
+        ds_file_path,
+        mass_functions,
+        conservation_degree,
+        threshold,
+        songs_data,
+        is_monte_carlo=False,
+    )
 
 
 if __name__ == "__main__":
